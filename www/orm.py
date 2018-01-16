@@ -61,6 +61,7 @@ def create_args_string(num):
         L.append('?')
     return ', '.join(L)
 
+// 字段的基类
 class Field(object):
 
     def __init__(self, name, column_type, primary_key, default):
@@ -97,8 +98,13 @@ class TextField(Field):
     def __init__(self, name=None, default=None):
         super().__init__(name, 'text', False, default)
 
+// Model类的元类
 class ModelMetaclass(type):
 
+    //当前准备创建的类的对象；
+    //类的名字；
+    //类继承的父类集合；
+    //类的方法集合。
     def __new__(cls, name, bases, attrs):
         if name=='Model':
             return type.__new__(cls, name, bases, attrs)
@@ -117,7 +123,7 @@ class ModelMetaclass(type):
                         raise StandardError('Duplicate primary key for field: %s' % k)
                     primaryKey = k
                 else:
-                    fields.append(k)
+                    fields.append(k) #将字段添加到这个集合里面
         if not primaryKey:
             raise StandardError('Primary key not found.')
         for k in mappings.keys():
